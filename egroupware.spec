@@ -4,9 +4,9 @@
 
 %define	name	egroupware
 %define	Name	eGroupWare
-%define	version	1.2.106
-%define	Version	1.2.106-2
-%define	release	%mkrel 2
+%define	version	1.2.107
+%define	Version	1.2.107-2
+%define	release	%mkrel 1
 %define order	71
 
 Name:		%{name}
@@ -22,7 +22,7 @@ Patch0:		eGroupWare-1.2-1-preferred_php_binary.diff
 Requires(pre): rpm-helper
 Requires (postun) : rpm-helper
 Requires(pre):  apache-conf >= 2.0.54
-Requires(pre):  apache-mpm-prefork >= 2.0.54
+Requires(pre):  apache-mpm >= 2.0.54
 Requires:	apache-mod_php php-xml php-gd
 Requires:	php-cli
 Requires:	%{name}-calendar %{name}-etemplate
@@ -415,5 +415,3 @@ rm -rf %{buildroot}
 %files workflow
 %defattr(-,root,root)
 %{_var}/www/%{name}/workflow
-
-
