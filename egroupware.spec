@@ -28,7 +28,6 @@ Requires:	php-cli
 Requires:	%{name}-calendar %{name}-etemplate
 BuildArch:	noarch
 BuildRequires:	file
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
 eGroupWare is a web-based groupware suite written in PHP. 
