@@ -61,7 +61,7 @@ Group:		System/Servers
 Requires:	%{name} >= %{version}-%{release}
 
 %description calendar
-Powerful calendar with meeting request system, Alarms, ICal and E-Mail support, 
+Powerful calendar with meeting request system, Alarms, ICal and E-Mail support,
 and ACL security.
 
 %package developer_tools
