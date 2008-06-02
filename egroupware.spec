@@ -263,8 +263,8 @@ install -d -m 755 %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
 
 # install files
-install -d -m 755 %{buildroot}%{_localstatedir}/%{name}/default/files
-install -d -m 755 %{buildroot}%{_localstatedir}/%{name}/default/backup
+install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/files
+install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/backup
 install -d -m 755 %{buildroot}%{_var}/www/%{name}
 cp -aRf * %{buildroot}%{_var}/www/%{name}
 
@@ -309,10 +309,10 @@ rm -rf %{buildroot}
 %{_var}/www/%{name}/setup
 %{_var}/www/%{name}/home
 %{_var}/www/%{name}/resources
-%attr(-,apache,apache) %dir %{_localstatedir}/%{name}
-%attr(-,apache,apache) %dir %{_localstatedir}/%{name}/default
-%attr(-,apache,apache) %dir %{_localstatedir}/%{name}/default/files
-%attr(-,apache,apache) %dir %{_localstatedir}/%{name}/default/backup
+%attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}
+%attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default
+%attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/files
+%attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/backup
 
 %files addressbook
 %defattr(-,root,root)
