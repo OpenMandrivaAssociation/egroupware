@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 6
+%define	release	%mkrel 7
 %define order	71
 
 Name:		%{name}
@@ -333,6 +333,19 @@ install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/backup
 install -d -m 755 %{buildroot}%{_var}/www/%{name}
 cp -aRf * %{buildroot}%{_var}/www/%{name}
 
+# setup the config file: this dummy content triggers the setup process 
+# (from upstream's package)
+cat > %{buildroot}%{_localstatedir}/lib/%{name}/header.inc.php << EOF
+<?php
+// dummy setup file
+if (strpos($_SERVER['PHP_SELF'],'/setup/') === false)
+{
+        header('Location: /egroupware/setup/');
+        exit;
+}
+EOF
+ln -s %{_localstatedir}/lib/%{name}/header.inc.php %{buildroot}%{_var}/www/%{name}/header.inc.php
+
 # post-install cleanup
 rm -rf %{buildroot}%{_var}/www/%{name}/doc 
 rm -rf %{buildroot}%{_var}/www/%{name}/*/doc 
@@ -363,6 +376,8 @@ rm -rf %{buildroot}
 %doc phpgwapi/doc/*
 # Apache configuration file
 %config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
+# Header config file
+%attr(640,apache,apache) %config(noreplace) %{_localstatedir}/lib/%{name}/header.inc.php
 # top level dir and files
 %dir %{_var}/www/%{name}
 %{_var}/www/%{name}/*.php
