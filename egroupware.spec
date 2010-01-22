@@ -34,8 +34,11 @@ Requires:	php-xml
 Requires:	php-gd
 Requires:	php-cli
 Requires:	php-dom
-Requires:	%{name}-calendar %{name}-etemplate
+Requires:	%{name}-calendar
+Requires:	%{name}-etemplate
+Requires:	%{name}-emailadmin
 Suggests:	php-pdo_mysql
+Suggests:	php-mcrypt
 Suggests:	php-imap
 Suggests:	php-pear-HTTP_WebDAV_Server
 BuildArch:	noarch
@@ -105,7 +108,7 @@ Suggests:	php-pear-Auth_SASL
 EmailAdmin enables user email account maintenance in eGroupWare.
 
 %package etemplate
-Summary:	The eGroupWare %{etempalte} application
+Summary:	The eGroupWare %{etemplate} application
 Group:		System/Servers
 Requires:	%{name}-addressbook = %{version}-%{release}
 
