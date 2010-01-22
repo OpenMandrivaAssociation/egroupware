@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 2
+%define	release	%mkrel 3
 %define order	71
 
 Name:		%{name}
@@ -145,6 +145,10 @@ A gallery application for eGroupWare (a port of gallery2).
 Summary:        The eGroupWare iCal server
 Group:   	System/Servers
 Requires:       %{name} >= %{version}-%{release}
+Obsoletes:	egroupware-contrib-icalsrv < 1.2.107-5
+Obsoletes:	egroupware-contrib-egwical < 1.2.107-5
+Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
+Provides:	egroupware-contrib-egwical = %{version}-%{release}
 
 %description icalsrv
 This package provides an iCal server for the eGroupware suite. NOTE that 
