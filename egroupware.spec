@@ -3,27 +3,31 @@
 %undefine __find_requires
 
 %define	name	egroupware
-%define	Name	eGroupWare
-%define	version	1.2.107
-%define	Version	1.2.107-2
-%define	release	%mkrel 4
+%define	Name	eGroupware
+%define	version	1.6.002
+%define	Version	1.6.002
+%define	release	%mkrel 1
 %define order	71
 
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
 Summary:	Web-based groupware suite written in php
-License:	GPL
+License:	GPL+
 Group:		System/Servers
 URL:		http://www.egroupware.org/
 Source0:	%{Name}-%{Version}.tar.bz2
 Source1:	%{name}-apache.conf
-Patch0:		eGroupWare-1.2-1-preferred_php_binary.diff
-Requires(pre): rpm-helper
-Requires (postun) : rpm-helper
-Requires(pre):  apache-conf >= 2.0.54
-Requires(pre):  apache-mpm >= 2.0.54
-Requires:	apache-mod_php php-xml php-gd
+Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
+
+Requires(pre):		rpm-helper
+Requires (postun):	rpm-helper
+
+Requires(pre):	apache-conf >= 2.0.54
+Requires(pre):	apache-mpm >= 2.0.54
+Requires:	apache-mod_php
+Requires:	php-xml
+Requires:	php-gd
 Requires:	php-cli
 Requires:	%{name}-calendar %{name}-etemplate
 BuildArch:	noarch
@@ -74,14 +78,6 @@ The TranslationTools allow to create and extend translations-files for
 eGroupWare. They can search the sources for new / added phrases and show you
 the ones missing in your language. 
 
-%package docs
-Summary:	The eGroupWare docs
-Group:		System/Servers
-Requires:	%{name} >= %{version}-%{release}
-
-%description docs
-This is the docs for eGroupWare.
-
 %package emailadmin
 Summary:	The eGroupWare emailadmin application
 Group:		System/Servers
@@ -116,6 +112,15 @@ Requires:	%{name} >= %{version}-%{release}
 %description filemanager
 This is the filemanager app for eGroupWare.
 
+%package importexport
+Summary:	The eGroupWare import/export function
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
+
+%description importexport
+This package provides a general import/export function for the 
+eGroupware suite.
+
 %package infolog
 Summary:	The eGroupWare infolog application
 Group:		System/Servers
@@ -125,20 +130,12 @@ Requires:	%{name} >= %{version}-%{release}
 This is the infolog app for eGroupWare.
 
 %package manual
-Summary:        The eGroupWare messenger application
-Group:          System/Servers
-Requires:       %{name} >= %{version}-%{release}
+Summary:	The eGroupWare messenger application
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
 
 %description manual
 This is the manual app for eGroupWare.
-
-%package mydms
-Summary:        Advanced tool for shared files
-Group:          System/Servers
-Requires:       %{name} >= %{version}-%{release}
-
-%description mydms
-Advanced tool for shared files.
 
 %package news_admin
 Summary:	The eGroupWare news_admin application
@@ -147,6 +144,15 @@ Requires:	%{name} >= %{version}-%{release}
 
 %description news_admin
 This is the news_admin app for eGroupWare.
+
+%package notifications
+Summary:	User notifications for eGroupWare
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
+
+%description notifications
+This package provides pop-up user notifications for the eGroupWare 
+suite.
 
 %package phpbrain
 Summary:	The eGroupWare phpbrain application
@@ -189,9 +195,9 @@ Requires:	%{name} >= %{version}-%{release}
 This is the registration app for eGroupWare.
 
 %package sambaadmin
-Summary:        The eGroupWare sambaadmin application
-Group:          System/Servers
-Requires:       %{name} >= %{version}-%{release}
+Summary:	The eGroupWare sambaadmin application
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
 
 %description sambaadmin
 Manage Samba resources with egroupware.
@@ -205,20 +211,28 @@ Requires:	%{name} >= %{version}-%{release}
 This is the sitemgr app for eGroupWare.
 
 %package syncml
-Summary:        The eGroupWare syncml application
-Group:          System/Servers
-Requires:       %{name} >= %{version}-%{release}
+Summary:	The eGroupWare syncml application
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
 
 %description syncml
 Synchronisation for agenda, contacts and todo list.
 
 %package timesheet
-Summary:        The eGroupWare timesheet application
-Group:          System/Servers
-Requires:       %{name} >= %{version}-%{release}
+Summary:	The eGroupWare timesheet application
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
 
 %description timesheet
 Free time management.
+
+%package tracker
+Summary:	The eGroupWare tracker application
+Group:		System/Servers
+Requires:	%{name} = %{version}-%{release}
+
+%description tracker
+This is the tracker app for eGroupWare.
 
 %package wiki
 Summary:	The eGroupWare wiki application
@@ -228,18 +242,9 @@ Requires:	%{name}-addressbook = %{version}-%{release}
 %description wiki
 This is the wiki app for eGroupWare.
 
-%package workflow
-Summary:        The eGroupWare workflow application
-Group:          System/Servers
-Requires:       %{name}-addressbook = %{version}-%{release}
-
-%description workflow
-This is the workflow app for eGroupWare.
-
 %prep
-
 %setup -q -n %{name}
-%patch0 -p0
+%patch0 -p1
 
 # cleanup
 find . -type d -name CVS | xargs rm -rf
@@ -256,7 +261,7 @@ find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
 %build
 
 %install
-rm -rf  %{buildroot}
+rm -rf %{buildroot}
 
 # apache configuration
 install -d -m 755 %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
@@ -272,7 +277,6 @@ cp -aRf * %{buildroot}%{_var}/www/%{name}
 rm -rf %{buildroot}%{_var}/www/%{name}/doc 
 rm -rf %{buildroot}%{_var}/www/%{name}/*/doc 
 rm -f %{buildroot}%{_var}/www/%{name}/felamimail/{COPYING,Changelog,README,TODO}
-rm -rf %{buildroot}%{_var}/www/%{name}/infolog/debian
 # doc cleanup
 rm -f doc/Makefile
 rm -rf doc/rpm-build
@@ -348,8 +352,11 @@ rm -rf %{buildroot}
 
 %files filemanager
 %defattr(-,root,root)
-%doc filemanager/doc/*
 %{_var}/www/%{name}/filemanager
+
+%files importexport
+%defattr(-,root,root)
+%{_var}/www/%{name}/importexport
 
 %files infolog
 %defattr(-,root,root)
@@ -359,14 +366,14 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_var}/www/%{name}/manual
 
-%files mydms
-%defattr(-,root,root)
-%{_var}/www/%{name}/mydms
-
 %files news_admin
 %defattr(-,root,root)
 %doc news_admin/doc/*
 %{_var}/www/%{name}/news_admin
+
+%files notifications
+%defattr(-,root,root)
+%{_var}/www/%{name}/notifications
 
 %files phpbrain
 %defattr(-,root,root)
@@ -396,7 +403,6 @@ rm -rf %{buildroot}
 
 %files sitemgr
 %defattr(-,root,root)
-%doc sitemgr/doc/*
 %{_var}/www/%{name}/sitemgr
 
 %files syncml
@@ -407,11 +413,11 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_var}/www/%{name}/timesheet
 
+%files tracker
+%defattr(-,root,root)
+%{_var}/www/%{name}/tracker
+
 %files wiki
 %defattr(-,root,root)
 %doc wiki/doc/*
 %{_var}/www/%{name}/wiki
-
-%files workflow
-%defattr(-,root,root)
-%{_var}/www/%{name}/workflow
