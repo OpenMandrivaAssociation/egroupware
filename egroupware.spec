@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 4
+%define	release	%mkrel 5
 %define order	71
 
 Name:		%{name}
@@ -333,6 +333,10 @@ install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/backup
 install -d -m 755 %{buildroot}%{_var}/www/%{name}
 cp -aRf * %{buildroot}%{_var}/www/%{name}
 
+# we need to make a dummy low-level config file so the setup process can 
+# write to it
+touch %{buildroot}%{_var}/www/%{name}/header.inc.php
+
 # post-install cleanup
 rm -rf %{buildroot}%{_var}/www/%{name}/doc 
 rm -rf %{buildroot}%{_var}/www/%{name}/*/doc 
@@ -366,6 +370,7 @@ rm -rf %{buildroot}
 # top level dir and files
 %dir %{_var}/www/%{name}
 %{_var}/www/%{name}/*.php
+%attr(640,apache,apache) %config(noreplace) %{_var}/www/%{name}/header.inc.php
 %{_var}/www/%{name}/header.inc.php.template
 %{_var}/www/%{name}/phpgwapi
 %{_var}/www/%{name}/admin
