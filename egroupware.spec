@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 3
+%define	release	%mkrel 4
 %define order	71
 
 Name:		%{name}
@@ -35,7 +35,7 @@ Requires:	php-gd
 Requires:	php-cli
 Requires:	php-dom
 Requires:	%{name}-calendar %{name}-etemplate
-Suggests:	php-mysql
+Suggests:	php-pdo_mysql
 Suggests:	php-imap
 Suggests:	php-pear-HTTP_WebDAV_Server
 BuildArch:	noarch
