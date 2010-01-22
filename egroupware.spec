@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 %define order	71
 
 Name:		%{name}
@@ -16,8 +16,12 @@ Summary:	Web-based groupware suite written in php
 License:	GPL+
 Group:		System/Servers
 URL:		http://www.egroupware.org/
-Source0:	%{Name}-%{Version}.tar.bz2
-Source1:	%{name}-apache.conf
+Source0:	http://downloads.sourceforge.net/%{name}/%{Name}-%{Version}.tar.bz2
+Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.tar.bz2
+Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-mydms-%{Version}.tar.bz2
+Source3:	http://downloads.sourceforge.net/%{name}/%{Name}-icalsrv-%{Version}.tar.bz2
+Source4:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
+Source5:	%{name}-apache.conf
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
 Requires(pre):		rpm-helper
@@ -29,7 +33,11 @@ Requires:	apache-mod_php
 Requires:	php-xml
 Requires:	php-gd
 Requires:	php-cli
+Requires:	php-dom
 Requires:	%{name}-calendar %{name}-etemplate
+Suggests:	php-mysql
+Suggests:	php-imap
+Suggests:	php-pear-HTTP_WebDAV_Server
 BuildArch:	noarch
 BuildRequires:	file
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -65,8 +73,8 @@ Group:		System/Servers
 Requires:	%{name} >= %{version}-%{release}
 
 %description calendar
-Powerful calendar with meeting request system, Alarms, ICal and E-Mail support,
-and ACL security.
+Powerful calendar with meeting request system, Alarms, CalDAV and E-Mail 
+support, and ACL security.
 
 %package developer_tools
 Summary:	The eGroupWare developer_tools application
@@ -78,13 +86,23 @@ The TranslationTools allow to create and extend translations-files for
 eGroupWare. They can search the sources for new / added phrases and show you
 the ones missing in your language. 
 
+%package egw-pear
+Summary:	php-pear classes for eGroupWare
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
+
+%description egw-pear
+egw-pear contains modified pear classes necessary for eGroupware.
+
 %package emailadmin
 Summary:	The eGroupWare emailadmin application
 Group:		System/Servers
 Requires:	%{name} >= %{version}-%{release}
+Requires:	%{name}-egw-pear >= %{version}-%{release}
+Suggests:	php-pear-Auth_SASL
 
 %description emailadmin
-EmailAdmin allow to maintain User email accounts 
+EmailAdmin enables user email account maintenance in eGroupWare.
 
 %package etemplate
 Summary:	The eGroupWare %{etempalte} application
@@ -100,17 +118,39 @@ and updates automaticaly tables_update.inc.php)
 Summary:	The eGroupWare felamimail application
 Group:		System/Servers
 Requires:	%{name}-emailadmin = %{version}-%{release}
+Requires:	%{name}-egw-pear = %{version}-%{release}
 
 %description felamimail
-The felamimail Email Reader is a other Email application for phpgw eGroupWare.
+The felamimail Email Reader is an alternative email application for eGroupWare.
 
 %package filemanager
 Summary:	The eGroupWare filemanager application
 Group:		System/Servers
 Requires:	%{name} >= %{version}-%{release}
+Requires:	%{name}-egw-pear >= %{version}-%{release}
 
 %description filemanager
 This is the filemanager app for eGroupWare.
+
+%package gallery
+Summary:	The eGroupWare gallery application
+Group:		System/Servers
+Requires:	%{name} >= %{version}-%{release}
+Requires:	%{name}-egw-pear >= %{version}-%{release}
+
+%description gallery
+A gallery application for eGroupWare (a port of gallery2).
+
+%package icalsrv
+Summary:        The eGroupWare iCal server
+Group:   	System/Servers
+Requires:       %{name} >= %{version}-%{release}
+
+%description icalsrv
+This package provides an iCal server for the eGroupware suite. NOTE that 
+this function is deprecated from eGroupWare 1.6 onwards: it is 
+recommended that you instead use GroupDAV, which is implemented in 
+various eGroupWare components.
 
 %package importexport
 Summary:	The eGroupWare import/export function
@@ -136,6 +176,15 @@ Requires:	%{name} >= %{version}-%{release}
 
 %description manual
 This is the manual app for eGroupWare.
+
+%package mydms 	 
+Summary:        Advanced tool for shared files 	 
+Group:          System/Servers 	 
+Requires:       %{name} >= %{version}-%{release} 	 
+Requires:	%{name}-egw-pear >= %{version}-%{release}
+	  	 
+%description mydms 	 
+Advanced tool for shared files.
 
 %package news_admin
 Summary:	The eGroupWare news_admin application
@@ -244,6 +293,10 @@ This is the wiki app for eGroupWare.
 
 %prep
 %setup -q -n %{name}
+%setup -q -T -D -b 1 -n %{name}
+%setup -q -T -D -b 2 -n %{name}
+%setup -q -T -D -b 3 -n %{name}
+%setup -q -T -D -b 4 -n %{name}
 %patch0 -p1
 
 # cleanup
@@ -265,7 +318,7 @@ rm -rf %{buildroot}
 
 # apache configuration
 install -d -m 755 %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
+install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
 
 # install files
 install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/files
@@ -336,6 +389,10 @@ rm -rf %{buildroot}
 %doc developer_tools/doc/*
 %{_var}/www/%{name}/developer_tools
 
+%files egw-pear
+%defattr(-,root,root)
+%{_var}/www/%{name}/egw-pear
+
 %files emailadmin
 %defattr(-,root,root)
 %{_var}/www/%{name}/emailadmin
@@ -347,12 +404,21 @@ rm -rf %{buildroot}
 
 %files felamimail
 %defattr(-,root,root)
-%doc felamimail/{COPYING,Changelog,README,TODO}
+%doc felamimail/{Changelog,README,TODO}
 %{_var}/www/%{name}/felamimail
 
 %files filemanager
 %defattr(-,root,root)
 %{_var}/www/%{name}/filemanager
+
+%files gallery
+%defattr(-,root,root)
+%{_var}/www/%{name}/gallery
+
+%files icalsrv
+%defattr(-,root,root)
+%doc icalsrv/doc/*
+%{_var}/www/%{name}/icalsrv
 
 %files importexport
 %defattr(-,root,root)
@@ -365,6 +431,11 @@ rm -rf %{buildroot}
 %files manual
 %defattr(-,root,root)
 %{_var}/www/%{name}/manual
+
+%files mydms 	 
+%defattr(-,root,root) 	 
+%doc mydms/{Changelog,README}
+%{_var}/www/%{name}/mydms
 
 %files news_admin
 %defattr(-,root,root)
