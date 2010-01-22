@@ -333,9 +333,10 @@ install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/backup
 install -d -m 755 %{buildroot}%{_var}/www/%{name}
 cp -aRf * %{buildroot}%{_var}/www/%{name}
 
-# we need to make a dummy low-level config file so the setup process can 
-# write to it
-touch %{buildroot}%{_var}/www/%{name}/header.inc.php
+# (thanks to misc) egw needs to be able to write to this file to 
+# complete its setup process, but the file can't exist or it fails: so 
+# make it a symlink to a directory where it has write privileges
+ln -s %{_localstatedir}/lib/%{name}/header.inc.php %{buildroot}%{_var}/www/%{name}/header.inc.php
 
 # post-install cleanup
 rm -rf %{buildroot}%{_var}/www/%{name}/doc 
@@ -370,7 +371,7 @@ rm -rf %{buildroot}
 # top level dir and files
 %dir %{_var}/www/%{name}
 %{_var}/www/%{name}/*.php
-%attr(640,apache,apache) %config(noreplace) %{_var}/www/%{name}/header.inc.php
+%attr(640,apache,apache) %config(noreplace) %{_localstatedir}/lib/%{name}/header.inc.php
 %{_var}/www/%{name}/header.inc.php.template
 %{_var}/www/%{name}/phpgwapi
 %{_var}/www/%{name}/admin
