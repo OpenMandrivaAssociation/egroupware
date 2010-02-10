@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 7
+%define	release	%mkrel 8
 %define order	71
 
 Name:		%{name}
