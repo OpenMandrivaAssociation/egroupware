@@ -6,8 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 8
-%define order	71
+%define	release	%mkrel 9
 
 Name:		%{name}
 Version:	%{version}
@@ -21,14 +20,12 @@ Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.ta
 Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-mydms-%{Version}.tar.bz2
 Source3:	http://downloads.sourceforge.net/%{name}/%{Name}-icalsrv-%{Version}.tar.bz2
 Source4:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
-Source5:	%{name}-apache.conf
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
-Requires(pre):		rpm-helper
-Requires (postun):	rpm-helper
-
-Requires(pre):	apache-conf >= 2.0.54
-Requires(pre):	apache-mpm >= 2.0.54
+%if %mdkversion < 201010
+Requires(post):   rpm-helper
+Requires(postun):   rpm-helper
+%endif
 Requires:	apache-mod_php
 Requires:	php-xml
 Requires:	php-gd
@@ -42,8 +39,7 @@ Suggests:	php-mcrypt
 Suggests:	php-imap
 Suggests:	php-pear-HTTP_WebDAV_Server
 BuildArch:	noarch
-BuildRequires:	file
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 eGroupWare is a web-based groupware suite written in PHP. 
@@ -314,18 +310,104 @@ find . -type f | xargs chmod 644
 find . -name .htaccess |xargs rm -f
 find . -name .svn | xargs rm -rf
 
-# strip away annoying ^M
-find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-
 %build
 
 %install
 rm -rf %{buildroot}
 
 # apache configuration
-install -d -m 755 %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
-install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
+install -d -m 755 %{buildroot}%{_webappconfdir}
+cat >  %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
+Alias /egroupware /var/www/egroupware
+
+<Directory /var/www/egroupware>
+  Options FollowSymLinks ExecCGI
+  AllowOverride None
+  Order allow,deny
+  Allow from all
+  DirectoryIndex index.html index.php
+  AddHandler cgi-script .cgi
+  AddDefaultCharset Off
+  php_flag file_uploads on
+  php_flag log_errors on
+  php_flag magic_quotes_gpc off
+  php_flag magic_quotes_runtime off
+  php_flag register_globals off
+  php_flag short_open_tag on
+  php_flag track_vars on
+  php_flag display_errors off
+  php_value error_reporting 'E_ALL & ~E_NOTICE'
+  php_value max_execution_time 90
+  php_admin_value mbstring.func_overload 7
+  php_value memory_limit 48M
+  php_value session.gc_maxlifetime 14400
+  php_value include_path .:/usr/share/pear
+  php_value open_basedir /var/www/egroupware:/tmp:/usr/share/pear
+  php_value upload_max_filesize 8M
+  <Files ~ "\.inc\.php$">
+    Order allow,deny
+    Deny from all
+  </Files>
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/sql>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/src>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/thm>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/cache>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/scripts>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/www_root>
+
+	php_admin_value output_buffering 16000
+	php_admin_value variables_order GPCS
+	php_admin_value implicit_flush 0
+	php_admin_value register_globals 0
+	php_admin_value register_argc_argv 0
+	php_admin_value magic_quotes_gpc 0
+	php_admin_value session.use_trans_sid 0
+
+</Directory>
+
+<Directory /var/www/egroupware/fudforum/setup/base/include>
+    Deny from all
+</Directory>
+
+<Directory /var/www/egroupware/phpsysinfo>
+  php_value open_basedir /
+</Directory>
+
+<Location /egroupware/icalsrv/icalsrv.php>
+    Script PUT /var/www/egroupware/icalsrv/icalsrv.php
+    AddHandler ical/ics .ics
+    Action ical/ics /var/www/egroupware/icalsrv/icalsrv.php
+    Order allow,deny
+    Allow from all
+</Location>
+
+<Location /egroupware/rpc.php>
+    php_admin_value mbstring.func_overload 0
+    Order allow,deny
+    Allow from all
+</Location>
+EOF
 
 # install files
 install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/files
@@ -356,16 +438,14 @@ rm -rf doc/rpm-build
 
 
 %post
-if [ -f %{_var}/lock/subsys/httpd ]; then
-    %{_initrddir}/httpd restart 1>&2;
-fi
+%if %mdkversion < 201010
+%_post_webapp
+%endif
     
 %postun
-if [ "$1" = "0" ]; then
-    if [ -f %{_var}/lock/subsys/httpd ]; then
-	%{_initrddir}/httpd restart 1>&2
-    fi
-fi
+%if %mdkversion < 201010
+%_postun_webapp
+%endif
 		    
 %clean
 rm -rf %{buildroot}
@@ -375,7 +455,7 @@ rm -rf %{buildroot}
 %doc doc/* 
 %doc phpgwapi/doc/*
 # Apache configuration file
-%config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/%{order}_%{name}.conf
+%config(noreplace) %{_webappconfdir}/%{name}.conf
 # Header config file
 %attr(640,apache,apache) %config(noreplace) %{_localstatedir}/lib/%{name}/header.inc.php
 # top level dir and files
