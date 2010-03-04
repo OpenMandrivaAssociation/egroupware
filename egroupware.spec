@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.6.002
 %define	Version	1.6.002
-%define	release	%mkrel 9
+%define	release	%mkrel 10
 
 Name:		%{name}
 Version:	%{version}
@@ -21,6 +21,7 @@ Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-mydms-%{Version}.tar.b
 Source3:	http://downloads.sourceforge.net/%{name}/%{Name}-icalsrv-%{Version}.tar.bz2
 Source4:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
+Patch1:		egroupware-1.6.002-syncml.patch
 
 %if %mdkversion < 201010
 Requires(post):   rpm-helper
@@ -301,6 +302,7 @@ This is the wiki app for eGroupWare.
 %setup -q -T -D -b 3 -n %{name}
 %setup -q -T -D -b 4 -n %{name}
 %patch0 -p1
+%patch1 -p1
 
 # cleanup
 find . -type d -name CVS | xargs rm -rf
@@ -420,7 +422,7 @@ cp -aRf * %{buildroot}%{_var}/www/%{name}
 cat > %{buildroot}%{_localstatedir}/lib/%{name}/header.inc.php << EOF
 <?php
 // dummy setup file
-if (strpos($_SERVER['PHP_SELF'],'/setup/') === false)
+if (strpos(\$_SERVER['PHP_SELF'],'/setup/') === false)
 {
         header('Location: /egroupware/setup/');
         exit;
