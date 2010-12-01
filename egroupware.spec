@@ -4,8 +4,8 @@
 
 %define	name	egroupware
 %define	Name	eGroupware
-%define	version	1.6.003
-%define	Version	1.6.003
+%define	version	1.8.001.20101201
+%define	Version	1.8.001.20101201
 %define	release	%mkrel 1
 
 Name:		%{name}
@@ -17,9 +17,7 @@ Group:		System/Servers
 URL:		http://www.egroupware.org/
 Source0:	http://downloads.sourceforge.net/%{name}/%{Name}-%{Version}.tar.bz2
 Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.tar.bz2
-Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-mydms-%{Version}.tar.bz2
-Source3:	http://downloads.sourceforge.net/%{name}/%{Name}-icalsrv-%{Version}.tar.bz2
-Source4:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
+Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
 %if %mdkversion < 201010
@@ -38,6 +36,18 @@ Suggests:	php-pdo_mysql
 Suggests:	php-mcrypt
 Suggests:	php-imap
 Suggests:	php-pear-HTTP_WebDAV_Server
+Provides:	egroupware-addressbook = %{version}-%{release}
+Provides:	egroupware-etemplate = %{version}-%{release}
+Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
+Provides:	egroupware-contrib-egwical = %{version}-%{release}
+Provides:	egroupware-icalsrv = %{version}-%{release}
+Provides:	egroupware-mydms = %{version}-%{release}
+Obsoletes:	egroupware-addressbook < 1.8.001.2010111-1
+Obsoletes:	egroupware-etemplate < 1.8.001.2010111-1
+Obsoletes:	egroupware-icalsrv < 1.8.001.2010111-1
+Obsoletes:	egroupware-mydms < 1.8.001.2010111-1
+Obsoletes:	egroupware-contrib-icalsrv < 1.2.107-5
+Obsoletes:	egroupware-contrib-egwical < 1.2.107-5
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 
@@ -46,17 +56,6 @@ eGroupWare is a web-based groupware suite written in PHP.
 The core package provides the admin, setup, phpgwapi and preferences
 packages. It also provides an API for developing additional applications. 
 See the egroupware apps project for add-on apps.
-
-%package addressbook
-Summary:	The eGroupWare addressbook application
-Group:		System/Servers
-Requires:	%{name} >= %{version}-%{release}
-
-%description addressbook
-Contact manager with Vcard support.
-addressbook is the egroupware default contact application.
-It makes use of the phpgroupware contacts class to store and retrieve 
-contact information via SQL, LDAP or Active Directory.
 
 %package bookmarks
 Summary:	The eGroupWare bookmarks application
@@ -103,16 +102,6 @@ Suggests:	php-pear-Auth_SASL
 %description emailadmin
 EmailAdmin enables user email account maintenance in eGroupWare.
 
-%package etemplate
-Summary:	The eGroupWare %{etemplate} application
-Group:		System/Servers
-Requires:	%{name}-addressbook = %{version}-%{release}
-
-%description etemplate
-eTemplates are a new widget-based template system for eGroupWare with an
-interactive editor and a database table-editor (creates tables_current.inc.php
-and updates automaticaly tables_update.inc.php)
-
 %package felamimail
 Summary:	The eGroupWare felamimail application
 Group:		System/Servers
@@ -140,21 +129,6 @@ Requires:	%{name}-egw-pear >= %{version}-%{release}
 %description gallery
 A gallery application for eGroupWare (a port of gallery2).
 
-%package icalsrv
-Summary:        The eGroupWare iCal server
-Group:   	System/Servers
-Requires:       %{name} >= %{version}-%{release}
-Obsoletes:	egroupware-contrib-icalsrv < 1.2.107-5
-Obsoletes:	egroupware-contrib-egwical < 1.2.107-5
-Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
-Provides:	egroupware-contrib-egwical = %{version}-%{release}
-
-%description icalsrv
-This package provides an iCal server for the eGroupware suite. NOTE that 
-this function is deprecated from eGroupWare 1.6 onwards: it is 
-recommended that you instead use GroupDAV, which is implemented in 
-various eGroupWare components.
-
 %package importexport
 Summary:	The eGroupWare import/export function
 Group:		System/Servers
@@ -180,15 +154,6 @@ Requires:	%{name} >= %{version}-%{release}
 %description manual
 This is the manual app for eGroupWare.
 
-%package mydms 	 
-Summary:        Advanced tool for shared files 	 
-Group:          System/Servers 	 
-Requires:       %{name} >= %{version}-%{release} 	 
-Requires:	%{name}-egw-pear >= %{version}-%{release}
-	  	 
-%description mydms 	 
-Advanced tool for shared files.
-
 %package news_admin
 Summary:	The eGroupWare news_admin application
 Group:		System/Servers
@@ -209,7 +174,6 @@ suite.
 %package phpbrain
 Summary:	The eGroupWare phpbrain application
 Group:		System/Servers
-Requires:	%{name}-addressbook = %{version}-%{release}
 
 %description phpbrain
 This is the phpbrain app for eGroupWare.
@@ -289,7 +253,6 @@ This is the tracker app for eGroupWare.
 %package wiki
 Summary:	The eGroupWare wiki application
 Group:		System/Servers
-Requires:	%{name}-addressbook = %{version}-%{release}
 
 %description wiki
 This is the wiki app for eGroupWare.
@@ -298,8 +261,6 @@ This is the wiki app for eGroupWare.
 %setup -q -n %{name}
 %setup -q -T -D -b 1 -n %{name}
 %setup -q -T -D -b 2 -n %{name}
-%setup -q -T -D -b 3 -n %{name}
-%setup -q -T -D -b 4 -n %{name}
 %patch0 -p1
 
 # cleanup
@@ -317,97 +278,7 @@ rm -rf %{buildroot}
 
 # apache configuration
 install -d -m 755 %{buildroot}%{_webappconfdir}
-cat >  %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
-Alias /egroupware /var/www/egroupware
-
-<Directory /var/www/egroupware>
-  Options FollowSymLinks ExecCGI
-  AllowOverride None
-  Order allow,deny
-  Allow from all
-  DirectoryIndex index.html index.php
-  AddHandler cgi-script .cgi
-  AddDefaultCharset Off
-  php_flag file_uploads on
-  php_flag log_errors on
-  php_flag magic_quotes_gpc off
-  php_flag magic_quotes_runtime off
-  php_flag register_globals off
-  php_flag short_open_tag on
-  php_flag track_vars on
-  php_flag display_errors off
-  php_value error_reporting 'E_ALL & ~E_NOTICE'
-  php_value max_execution_time 90
-  php_admin_value mbstring.func_overload 7
-  php_value memory_limit 48M
-  php_value session.gc_maxlifetime 14400
-  php_value include_path .:/usr/share/pear
-  php_value open_basedir /var/www/egroupware:/tmp:/usr/share/pear
-  php_value upload_max_filesize 8M
-  <Files ~ "\.inc\.php$">
-    Order allow,deny
-    Deny from all
-  </Files>
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/sql>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/src>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/thm>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/cache>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/scripts>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/www_root>
-
-	php_admin_value output_buffering 16000
-	php_admin_value variables_order GPCS
-	php_admin_value implicit_flush 0
-	php_admin_value register_globals 0
-	php_admin_value register_argc_argv 0
-	php_admin_value magic_quotes_gpc 0
-	php_admin_value session.use_trans_sid 0
-
-</Directory>
-
-<Directory /var/www/egroupware/fudforum/setup/base/include>
-    Deny from all
-</Directory>
-
-<Directory /var/www/egroupware/phpsysinfo>
-  php_value open_basedir /
-</Directory>
-
-<Location /egroupware/icalsrv/icalsrv.php>
-    Script PUT /var/www/egroupware/icalsrv/icalsrv.php
-    AddHandler ical/ics .ics
-    Action ical/ics /var/www/egroupware/icalsrv/icalsrv.php
-    Order allow,deny
-    Allow from all
-</Location>
-
-<Location /egroupware/rpc.php>
-    php_admin_value mbstring.func_overload 0
-    Order allow,deny
-    Allow from all
-</Location>
-EOF
+sed 's,\/usr\/share\/egroupware,\/var\/www\/egroupware,' doc/rpm-build/apache.conf > %{buildroot}%{_webappconfdir}/%{name}.conf
 
 # install files
 install -d -m 755 %{buildroot}%{_localstatedir}/lib/%{name}/default/files
@@ -417,15 +288,7 @@ cp -aRf * %{buildroot}%{_var}/www/%{name}
 
 # setup the config file: this dummy content triggers the setup process 
 # (from upstream's package)
-cat > %{buildroot}%{_localstatedir}/lib/%{name}/header.inc.php << EOF
-<?php
-// dummy setup file
-if (strpos(\$_SERVER['PHP_SELF'],'/setup/') === false)
-{
-        header('Location: /egroupware/setup/');
-        exit;
-}
-EOF
+cp doc/rpm-build/header.inc.php %{buildroot}%{_localstatedir}/lib/%{name}/header.inc.php
 ln -s %{_localstatedir}/lib/%{name}/header.inc.php %{buildroot}%{_var}/www/%{name}/header.inc.php
 
 # post-install cleanup
@@ -461,9 +324,12 @@ rm -rf %{buildroot}
 # top level dir and files
 %dir %{_var}/www/%{name}
 %{_var}/www/%{name}/*.php
+%{_var}/www/%{name}/groupdav.htaccess
 %{_var}/www/%{name}/header.inc.php.template
 %{_var}/www/%{name}/phpgwapi
+%{_var}/www/%{name}/addressbook
 %{_var}/www/%{name}/admin
+%{_var}/www/%{name}/etemplate
 %{_var}/www/%{name}/preferences
 %{_var}/www/%{name}/setup
 %{_var}/www/%{name}/home
@@ -473,17 +339,12 @@ rm -rf %{buildroot}
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/files
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/backup
 
-%files addressbook
-%defattr(-,root,root)
-%{_var}/www/%{name}/addressbook
-
 %files bookmarks
 %defattr(-,root,root)
 %{_var}/www/%{name}/bookmarks
 
 %files calendar
 %defattr(-,root,root)
-%doc calendar/doc/*
 %{_var}/www/%{name}/calendar
 
 %files developer_tools
@@ -499,11 +360,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_var}/www/%{name}/emailadmin
 
-%files etemplate
-%defattr(-,root,root)
-%doc etemplate/doc/*
-%{_var}/www/%{name}/etemplate
-
 %files felamimail
 %defattr(-,root,root)
 %doc felamimail/{Changelog,README,TODO}
@@ -517,11 +373,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_var}/www/%{name}/gallery
 
-%files icalsrv
-%defattr(-,root,root)
-%doc icalsrv/doc/*
-%{_var}/www/%{name}/icalsrv
-
 %files importexport
 %defattr(-,root,root)
 %{_var}/www/%{name}/importexport
@@ -533,11 +384,6 @@ rm -rf %{buildroot}
 %files manual
 %defattr(-,root,root)
 %{_var}/www/%{name}/manual
-
-%files mydms 	 
-%defattr(-,root,root) 	 
-%doc mydms/{Changelog,README}
-%{_var}/www/%{name}/mydms
 
 %files news_admin
 %defattr(-,root,root)
