@@ -4,9 +4,9 @@
 
 %define	name	egroupware
 %define	Name	eGroupware
-%define	version	1.8.001.20110214
-%define	Version	1.8.001.20110214
-%define	release	%mkrel 2
+%define	version	1.8.001.20110216
+%define	Version	1.8.001.20110216
+%define	release	%mkrel 1
 
 Name:		%{name}
 Version:	%{version}
