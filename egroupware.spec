@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.8.001.20110421
 %define	Version	1.8.001.20110421
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 
 Name:		%{name}
 Version:	%{version}
@@ -35,7 +35,6 @@ Requires:	%{name}-emailadmin
 Suggests:	php-pdo_mysql
 Suggests:	php-mcrypt
 Suggests:	php-imap
-Suggests:	php-pear-HTTP_WebDAV_Server
 Provides:	egroupware-addressbook = %{version}-%{release}
 Provides:	egroupware-etemplate = %{version}-%{release}
 Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
