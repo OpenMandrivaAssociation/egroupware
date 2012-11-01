@@ -333,6 +333,7 @@ rm -rf %{buildroot}
 %{_var}/www/%{name}/setup
 %{_var}/www/%{name}/home
 %{_var}/www/%{name}/resources
+%{_var}/www/%{name}/files/webdav.php
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/files
