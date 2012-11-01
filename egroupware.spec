@@ -4,8 +4,8 @@
 
 %define	name	egroupware
 %define	Name	eGroupware
-%define	version	1.8.004.20120423
-%define	Version	1.8.004.20120423
+%define	version	1.8.004.20121024
+%define	Version	1.8.004.20121024
 %define	release	%mkrel 1
 
 Name:		%{name}
@@ -25,16 +25,16 @@ Requires(post):   rpm-helper
 Requires(postun):   rpm-helper
 %endif
 Requires:	apache-mod_php
-Requires:	php-xml
-Requires:	php-gd
-Requires:	php-cli
-Requires:	php-dom
+Requires:	php-xml php-mbstring
+Requires:	php-gd php-zip
+Requires:	php-cli php-pdo_sqlite
+Requires:	php-dom php-ldap
 Requires:	%{name}-calendar
 Requires:	%{name}-etemplate
 Requires:	%{name}-emailadmin
-Suggests:	php-pdo_mysql
-Suggests:	php-mcrypt
-Suggests:	php-imap
+Requires:	php-pdo_mysql 
+Requires:	php-mcrypt
+Requires:	php-imap
 Provides:	egroupware-addressbook = %{version}-%{release}
 Provides:	egroupware-etemplate = %{version}-%{release}
 Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
