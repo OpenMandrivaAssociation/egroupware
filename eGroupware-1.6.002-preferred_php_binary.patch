@@ -1,0 +1,27 @@
+--- egroupware/phpgwapi/inc/class.asyncservice.inc.php	2009-07-20 07:28:10.000000000 -0700
++++ egroupware/phpgwapi/inc/class.asyncservice.inc.php.new	2010-01-21 21:51:29.777592145 -0800
+@@ -532,8 +532,6 @@
+ 		{
+ 			$binarys = array(
+ 				'php'  => '/usr/bin/php',
+-				'php4' => '/usr/bin/php4',		// this is for debian
+-				'php5' => '/usr/bin/php5',		// SuSE 9.3 with php5
+ 				'crontab' => '/usr/bin/crontab'
+ 			);
+ 			foreach ($binarys as $name => $path)
+@@ -568,13 +566,9 @@
+ 				}
+ 				//echo "<p>$name = '".$this->$name."'</p>\n";
+ 			}
+-			if ($this->php4{0} == '/')	// we found a php4 binary
++			if ($this->php{0} == '/')	// we found a php binary
+ 			{
+-				$this->php = $this->php4;
+-			}
+-			if ($this->php5{0} == '/')	// we found a php5 binary
+-			{
+-				$this->php = $this->php5;
++				$this->php = $this->php;
+ 			}
+ 		}
+ 	}
