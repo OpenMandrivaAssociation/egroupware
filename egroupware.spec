@@ -20,10 +20,6 @@ Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.ta
 Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
-%if %mdkversion < 201010
-Requires(post):   rpm-helper
-Requires(postun):   rpm-helper
-%endif
 Requires:	apache-mod_php
 Requires:	php-xml
 Requires:	php-gd
@@ -50,7 +46,6 @@ Obsoletes:	egroupware-mydms < 1.8.001.2010111-1
 Obsoletes:	egroupware-contrib-icalsrv < 1.2.107-5
 Obsoletes:	egroupware-contrib-egwical < 1.2.107-5
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 eGroupWare is a web-based groupware suite written in PHP. 
@@ -275,8 +270,6 @@ find . -name .svn | xargs rm -rf
 %build
 
 %install
-rm -rf %{buildroot}
-
 # apache configuration
 install -d -m 755 %{buildroot}%{_webappconfdir}
 sed 's,\/usr\/share\/egroupware,\/var\/www\/egroupware,' doc/rpm-build/apache.conf > %{buildroot}%{_webappconfdir}/%{name}.conf
@@ -299,20 +292,6 @@ rm -f %{buildroot}%{_var}/www/%{name}/felamimail/{COPYING,Changelog,README,TODO}
 # doc cleanup
 rm -f doc/Makefile
 rm -rf doc/rpm-build
-
-
-%post
-%if %mdkversion < 201010
-%_post_webapp
-%endif
-    
-%postun
-%if %mdkversion < 201010
-%_postun_webapp
-%endif
-		    
-%clean
-rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
