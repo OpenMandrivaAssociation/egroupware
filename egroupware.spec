@@ -6,7 +6,7 @@
 %define	Name	eGroupware
 %define	version	1.8.004.20120423
 %define	Version	1.8.004.20120423
-%define	release	%mkrel 1
+%define	release 2
 
 Name:		%{name}
 Version:	%{version}
@@ -29,6 +29,8 @@ Requires:	php-xml
 Requires:	php-gd
 Requires:	php-cli
 Requires:	php-dom
+Requires:	php-zip
+Requires:   php-pear-XML_Parser
 Requires:	%{name}-calendar
 Requires:	%{name}-etemplate
 Requires:	%{name}-emailadmin
