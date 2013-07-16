@@ -6,11 +6,10 @@
 %define	Name	eGroupware
 %define	version	1.8.004.20121024
 %define	Version	1.8.004.20121024
-%define	release	%mkrel 1
 
 Name:		%{name}
 Version:	%{version}
-Release:	%{release}
+Release:	1
 Summary:	Web-based groupware suite written in php
 License:	GPL+
 Group:		System/Servers
@@ -20,21 +19,22 @@ Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.ta
 Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
-%if %mdkversion < 201010
-Requires(post):   rpm-helper
-Requires(postun):   rpm-helper
-%endif
 Requires:	apache-mod_php
-Requires:	php-xml php-mbstring
-Requires:	php-gd php-zip
-Requires:	php-cli php-pdo_sqlite
-Requires:	php-dom php-ldap
+Requires:	php-xml
+Requires:   php-mbstring
+Requires:	php-gd
+Requires:   php-zip
+Requires:	php-cli
+Requires:   php-pdo_sqlite
+Requires:	php-dom
+Requires:   php-ldap
+Requires:   php-pear-XML_Parser
 Requires:	%{name}-calendar
 Requires:	%{name}-etemplate
 Requires:	%{name}-emailadmin
-Requires:	php-pdo_mysql 
-Requires:	php-mcrypt
-Requires:	php-imap
+Suggests:	php-pdo_mysql 
+Suggests:	php-mcrypt
+Suggests:	php-imap
 Provides:	egroupware-addressbook = %{version}-%{release}
 Provides:	egroupware-etemplate = %{version}-%{release}
 Provides:	egroupware-contrib-icalsrv = %{version}-%{release}
@@ -48,7 +48,6 @@ Obsoletes:	egroupware-mydms < 1.8.001.2010111-1
 Obsoletes:	egroupware-contrib-icalsrv < 1.2.107-5
 Obsoletes:	egroupware-contrib-egwical < 1.2.107-5
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 eGroupWare is a web-based groupware suite written in PHP. 
@@ -273,8 +272,6 @@ find . -name .svn | xargs rm -rf
 %build
 
 %install
-rm -rf %{buildroot}
-
 # apache configuration
 install -d -m 755 %{buildroot}%{_webappconfdir}
 sed 's,\/usr\/share\/egroupware,\/var\/www\/egroupware,' doc/rpm-build/apache.conf > %{buildroot}%{_webappconfdir}/%{name}.conf
@@ -299,21 +296,7 @@ rm -f doc/Makefile
 rm -rf doc/rpm-build
 
 
-%post
-%if %mdkversion < 201010
-%_post_webapp
-%endif
-    
-%postun
-%if %mdkversion < 201010
-%_postun_webapp
-%endif
-		    
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %doc doc/* 
 %doc phpgwapi/doc/*
 # Apache configuration file
@@ -333,7 +316,7 @@ rm -rf %{buildroot}
 %{_var}/www/%{name}/setup
 %{_var}/www/%{name}/home
 %{_var}/www/%{name}/resources
-%{_var}/www/%{name}/files/webdav.php
+%{_var}/www/%{name}/files
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/files
