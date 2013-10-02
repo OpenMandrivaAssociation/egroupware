@@ -2,37 +2,31 @@
 %undefine __find_provides
 %undefine __find_requires
 
-%define	name	egroupware
 %define	Name	eGroupware
-%define	version	1.8.004.20121024
-%define	Version	1.8.004.20121024
 
-Name:		%{name}
-Version:	%{version}
+Name:		egroupware
+Version:	1.8.005.20131001
 Release:	1
 Summary:	Web-based groupware suite written in php
 License:	GPL+
 Group:		System/Servers
 URL:		http://www.egroupware.org/
-Source0:	http://downloads.sourceforge.net/%{name}/%{Name}-%{Version}.tar.bz2
-Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{Version}.tar.bz2
-Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{Version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/%{name}/%{Name}-%{version}.tar.bz2
+Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{version}.tar.bz2
+Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{version}.tar.bz2
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
 Requires:	apache-mod_php
 Requires:	php-xml
-Requires:   php-mbstring
 Requires:	php-gd
-Requires:   php-zip
 Requires:	php-cli
-Requires:   php-pdo_sqlite
 Requires:	php-dom
-Requires:   php-ldap
+Requires:	php-zip
 Requires:   php-pear-XML_Parser
 Requires:	%{name}-calendar
 Requires:	%{name}-etemplate
 Requires:	%{name}-emailadmin
-Suggests:	php-pdo_mysql 
+Suggests:	php-pdo_mysql
 Suggests:	php-mcrypt
 Suggests:	php-imap
 Provides:	egroupware-addressbook = %{version}-%{release}
@@ -295,7 +289,6 @@ rm -f %{buildroot}%{_var}/www/%{name}/felamimail/{COPYING,Changelog,README,TODO}
 rm -f doc/Makefile
 rm -rf doc/rpm-build
 
-
 %files
 %doc doc/* 
 %doc phpgwapi/doc/*
@@ -323,79 +316,61 @@ rm -rf doc/rpm-build
 %attr(-,apache,apache) %dir %{_localstatedir}/lib/%{name}/default/backup
 
 %files bookmarks
-%defattr(-,root,root)
 %{_var}/www/%{name}/bookmarks
 
 %files calendar
-%defattr(-,root,root)
 %{_var}/www/%{name}/calendar
 
 %files developer_tools
-%defattr(-,root,root)
 %doc developer_tools/doc/*
 %{_var}/www/%{name}/developer_tools
 
 %files egw-pear
-%defattr(-,root,root)
 %{_var}/www/%{name}/egw-pear
 
 %files emailadmin
-%defattr(-,root,root)
 %{_var}/www/%{name}/emailadmin
 
 %files felamimail
-%defattr(-,root,root)
 %doc felamimail/{Changelog,README,TODO}
 %{_var}/www/%{name}/felamimail
 
 %files filemanager
-%defattr(-,root,root)
 %{_var}/www/%{name}/filemanager
 
 %files gallery
-%defattr(-,root,root)
 %{_var}/www/%{name}/gallery
 
 %files importexport
-%defattr(-,root,root)
 %{_var}/www/%{name}/importexport
 
 %files infolog
-%defattr(-,root,root)
 %{_var}/www/%{name}/infolog
 
 %files manual
-%defattr(-,root,root)
 %{_var}/www/%{name}/manual
 
 %files news_admin
-%defattr(-,root,root)
 %doc news_admin/doc/*
 %{_var}/www/%{name}/news_admin
 
 %files notifications
-%defattr(-,root,root)
 %{_var}/www/%{name}/notifications
 
 %files phpbrain
-%defattr(-,root,root)
 %{_var}/www/%{name}/phpbrain
 
 %files phpsysinfo
-%defattr(-,root,root)
 %{_var}/www/%{name}/phpsysinfo
 
 %files polls
-%defattr(-,root,root)
 %doc polls/doc/*
 %{_var}/www/%{name}/polls
 
 %files projectmanager
-%defattr(-,root,root)
 %{_var}/www/%{name}/projectmanager
 
 %files registration
-%defattr(-,root,root)
 %doc registration/doc/*
 %{_var}/www/%{name}/registration
 
@@ -404,34 +379,24 @@ rm -rf doc/rpm-build
 %{_var}/www/%{name}/sambaadmin
 
 %files sitemgr
-%defattr(-,root,root)
 %{_var}/www/%{name}/sitemgr
 
 %files syncml
-%defattr(-,root,root)
 %{_var}/www/%{name}/syncml
 
 %files timesheet
-%defattr(-,root,root)
 %{_var}/www/%{name}/timesheet
 
 %files tracker
-%defattr(-,root,root)
 %{_var}/www/%{name}/tracker
 
 %files wiki
-%defattr(-,root,root)
 %doc wiki/doc/*
 %{_var}/www/%{name}/wiki
 
 
 %changelog
-* Thu Nov 01 2012 Zombie Ryushu <ryushu@mandriva.org> 1.8.004.20121024-1mdv2012.0
-+ Revision: 821507
-- webdav
-- Upgrade to 20121024 and add some missing requires
-
-* Fri Apr 27 2012 Zombie Ryushu <ryushu@mandriva.org> 1.8.004.20120423-1
+* Fri Apr 27 2012 Zombie Ryushu <ryushu@mandriva.org> 1.8.004.20120423-1mdv2012.0
 + Revision: 794071
 - Needed upgrade due to security issues
 
