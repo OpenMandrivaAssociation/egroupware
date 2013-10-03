@@ -17,6 +17,7 @@ Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{version}.tar
 Patch0:		eGroupware-1.6.002-preferred_php_binary.patch
 
 Requires:	apache-mod_php
+Requires:   apache-mod_socache_shmcb
 Requires:	php-xml
 Requires:	php-gd
 Requires:	php-cli
