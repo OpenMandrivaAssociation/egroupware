@@ -6,7 +6,7 @@
 
 Name:		egroupware
 Version:	1.8.005.20131001
-Release:	1
+Release:	2
 Summary:	Web-based groupware suite written in php
 License:	GPL+
 Group:		System/Servers
