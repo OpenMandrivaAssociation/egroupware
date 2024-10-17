@@ -10,7 +10,7 @@ Release:	3
 Summary:	Web-based groupware suite written in php
 License:	GPL+
 Group:		System/Servers
-URL:		http://www.egroupware.org/
+URL:		https://www.egroupware.org/
 Source0:	http://downloads.sourceforge.net/%{name}/%{Name}-%{version}.tar.bz2
 Source1:	http://downloads.sourceforge.net/%{name}/%{Name}-egw-pear-%{version}.tar.bz2
 Source2:	http://downloads.sourceforge.net/%{name}/%{Name}-gallery-%{version}.tar.bz2
